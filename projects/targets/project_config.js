@@ -15,7 +15,7 @@ DoCompile = true;	//-- Compile all the project and engine source code (boolean).
 DoMake    = true;	//-- Link all the project and engine source code (boolean). Merge all REL into one IHX file
 DoPackage = true;	//-- Generate final binary file (boolean). Binarize the IHX file
 DoDeploy  = true;	//-- Gathering of all files necessary for the program to work (boolean). Depends on the type of target
-DoRun     = false;	//-- Start the program automatically at the end of the build (boolean)
+DoRun     = true;	//-- Start the program automatically at the end of the build (boolean)
 
 //*****************************************************************************
 // TOOLS SETTINGS
@@ -30,7 +30,7 @@ DoRun     = false;	//-- Start the program automatically at the end of the build 
 // MSXDOS    = `${ToolsDir}build/DOS/`;			//-- Path to the MSX-DOS files (string)
 // DskTool   = `${ToolsDir}build/msxtar/msxtar`;	//-- Path to the tool to generate DSK file (string)
 // Emulator  = "";									//-- Path to the emulator to launch the project (string)
-// Emulator  = `${ToolsDir}openMSX/openmsx`;
+ Emulator  = `${ToolsDir}openMSX/openmsx`;
 // Emulator  = `${ToolsDir}Emulicious/Emulicious`;
 // Emulator  = `${ToolsDir}fMSX/fMSX`;
 // Emulator  = `${ToolsDir}MSXEC\\MSXEC`;

@@ -43,7 +43,7 @@
 //*****************************************************************************
 
 //-- Project name (string). Will be use for output filename
-ProjName = "template";
+ProjName = "Template";
 
 //-- List of project modules to build (array). If empty, ProjName will be added
 ProjModules = [ ProjName ];
