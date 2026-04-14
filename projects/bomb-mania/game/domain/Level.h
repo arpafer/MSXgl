@@ -1,7 +1,7 @@
 
 #include "msxgl.h"
 
-#include "direction.h"
+#include "Direction.h"
 #include "map.h"
 #include "CellInfo.h"
 #include "Timer.h"
@@ -12,12 +12,13 @@ typedef struct LevelStruct
     u8 numPlayers;    
     Map* map;
     Timer* timer;
+    Player players[4];
 
 } Level;
 
 extern Level level;
 
-void Level_setLevel(Map* map, u8 numPlayers);
+void Level_setLevel(Map* map, u8 numPlayers, Player* players);
 
 bool Level_canMove(u8 playerId, Direction direction);
 
