@@ -1,0 +1,3 @@
+El fondo negro impide ver las bombas que se ponen. Y es el parpadeo de pantalla donde se puede ver por un segundo donde se encuentran.
+
+la pantalla parpadea cada 3 segundos.

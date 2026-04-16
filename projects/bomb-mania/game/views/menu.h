@@ -1,3 +1,3 @@
 
 void Menu_render();
-unsigned char Menu_getSelectedOption();
+u8 Menu_getSelectedOption();

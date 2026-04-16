@@ -12,6 +12,7 @@
 #include "msxgl.h"
 #include "game/views/menu.h"
 #include "game/views/level.h"
+#include "game/views/round.h"
 
 //=============================================================================
 // DEFINES
@@ -57,6 +58,17 @@ void main()
 		Halt();
 	}	 */
     unsigned char option = Menu_getSelectedOption();	
-    Level_render(1);
+	bool exit = FALSE;
+	u8 levelId = 1;
+	while (!exit) {
+	   Round_render(levelId);
+	   while (!Round_isRoundEnded());
+
+       Level_render(levelId);
+	   exit = TRUE;
+	}
+	exit = FALSE;
+	while (!exit); 
 	Bios_Exit(0);
+
 }

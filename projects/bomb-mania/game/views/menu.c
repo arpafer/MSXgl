@@ -20,13 +20,15 @@ void Menu_render() {
    Print_SetCharSize(1, 1);
    Print_SetTextFont(g_Font_MGL_Sample6, 1);
    Print_SetColor(COLOR_WHITE, COLOR_BLACK);
-   Print_SetPosition(0, 0);  
+   Print_SetPosition(0, 0);
+   Print_DrawText("--- B O M B    M A N I A ---");
+   Print_SetPosition(0, 3);  
    Print_DrawText("Selecciona numero de jugadores. ");
-   Print_SetPosition(0, 3);
-   Print_DrawText("1. Dos jugadores");
    Print_SetPosition(0, 5);
-   Print_DrawText("2. Tres jugadores");
+   Print_DrawText("1. Dos jugadores");
    Print_SetPosition(0, 7);
+   Print_DrawText("2. Tres jugadores");
+   Print_SetPosition(0, 8);
    Print_DrawText("3. Cuatro jugadores");
 
 }
