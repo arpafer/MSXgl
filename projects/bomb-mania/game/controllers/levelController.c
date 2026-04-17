@@ -9,8 +9,9 @@ static const TileInfo g_Level1TileInfo =
     sizeof(g_Level1TilePatterns),
     g_Level1TileColors,
     sizeof(g_Level1TileColors),
-    g_Level1MapTileMap,
-    sizeof(g_Level1MapTileMap),
+    g_Level1LogicMap,
+    LEVEL1_LOGIC_COLS,
+    LEVEL1_LOGIC_ROWS,
 };
 
 const TileInfo* LevelController_getTilesInfo(unsigned char nivelId)
