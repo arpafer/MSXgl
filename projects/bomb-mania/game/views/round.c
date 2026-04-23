@@ -25,6 +25,10 @@
 #define ROUND_SUBTITLE_START_X       11
 #define ROUND_SUBTITLE_START_Y       14
 
+#ifndef ROUND_COUNTDOWN_ID 
+  #define ROUND_COUNTDOWN_ID 1
+#endif 
+
 void Render_init()
 {
     VDP_Initialize();
@@ -32,7 +36,7 @@ void Render_init()
     VDP_SetColor(COLOR_BLACK);
     Print_Initialize();
     VDP_EnableVBlank(TRUE);
-    VDP_ClearVRAM();
+    VDP_ClearVRAM();    
 }
 
 static void Round_loadTileSetToAllBanks(const u8* patterns, const u8* colors, u8 tileCount, u8 offset)
@@ -119,7 +123,8 @@ void Round_render(u8 levelId)
     Round_renderTitle(levelId);
     Round_renderSubtitle("\"JUST FUN!\"");
 
-    TimerController_resetCount();    
+    TimerController_initialize();
+    TimerController_createCount(TIMER_ID_ROUND_START);
 
     /*
     Print_SetCharSize(3, 3);
@@ -134,6 +139,16 @@ void Round_render(u8 levelId)
 }
 
 bool Round_isRoundEnded()
-{    
-    return TimerController_countSeconds(GAME_COUNTDOWN);
+{
+    bool ended;
+
+    EnableInterrupt();
+    Halt();
+    TimerController_tick();
+
+    ended = TimerController_countSeconds(TIMER_ID_ROUND_START, GAME_COUNTDOWN_SECONDS);
+    if (ended) {
+        TimerController_removeTimerByTimerId(TIMER_ID_ROUND_START);
+    }
+    return ended;
 }

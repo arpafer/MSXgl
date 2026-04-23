@@ -65,6 +65,7 @@ void main()
 	   while (!Round_isRoundEnded());
 
        Level_render(levelId);
+	   while (!Level_isEnded(levelId));
 	   exit = TRUE;
 	}
 	exit = FALSE;

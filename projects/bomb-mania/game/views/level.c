@@ -12,6 +12,16 @@
 #define LEVEL_LOGICAL_MAX_COLS (LEVEL_PHYSICAL_COLS / 2)
 #define LEVEL_LOGICAL_MAX_ROWS (LEVEL_PHYSICAL_ROWS / 2)
 
+u8 stage_countdown_times[2] = {
+    180,
+    120
+};
+
+static u8 Level_getStageTime(u8 levelId)
+{
+    return stage_countdown_times[levelId - 1];
+}
+
 void Level_init()
 {
     VDP_Initialize();
@@ -141,10 +151,19 @@ void Level_loadTiles(unsigned char levelId)
     Level_renderLogicalMap(tilesInfo);
 }
 
-void Level_render(unsigned char levelId)
+void Level_render(u8 levelId)
 {
+    u8 stageTime = Level_getStageTime(levelId);
+
     Level_init();
     Level_loadTiles(levelId);
+    CountDown_render(stageTime);
+}
 
-    CountDown_render(levelId);
+bool Level_isEnded(u8 levelId)
+{
+    u8 stageTime = Level_getStageTime(levelId);
+    bool ended = CountDown_isEnded(stageTime);
+
+    return ended;
 }
