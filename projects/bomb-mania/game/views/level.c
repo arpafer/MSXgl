@@ -3,6 +3,7 @@
 #include "level.h"
 #include "../controllers/levelController.h"
 #include "countDown.h"
+#include "player.h"
 
 #define LEVEL_TILE_BASE_OFFSET 239
 #define LEVEL_PHYSICAL_COLS 32
@@ -158,6 +159,10 @@ void Level_render(u8 levelId)
     Level_init();
     Level_loadTiles(levelId);
     CountDown_render(stageTime);
+    Player_render(1);
+    Player_render(2);
+    Player_render(3);
+    Player_render(4);
 }
 
 bool Level_isEnded(u8 levelId)
