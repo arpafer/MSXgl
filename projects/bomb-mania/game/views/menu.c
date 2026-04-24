@@ -41,16 +41,16 @@ unsigned char Menu_getSelectedOption() {
     if (Keyboard_IsKeyPressed(KEY_1)) {
         Print_SetPosition(0, 9);
         Print_DrawText("Se ha seleccionado 2 jugadores");
-        return 1;
+        return 2;
     }
     if (Keyboard_IsKeyPressed(KEY_2)) {
         Print_SetPosition(0, 9);
         Print_DrawText("Se ha seleecionado 3 jugadores");
-        return 2;
+        return 3;
     }
     if (Keyboard_IsKeyPressed(KEY_3)) {
         Print_SetPosition(0, 9);
         Print_DrawText("Se ha seleecionado 4 jugadores");
-        return 3;
+        return 4;
     }
 }

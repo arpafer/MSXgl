@@ -5,6 +5,8 @@
 #include "../assets/playerSprites/player_sprite2.h"
 #include "../assets/playerSprites/player_sprite3.h"
 #include "../assets/playerSprites/player_sprite4.h"
+#include "../controllers/playerController.h"
+#include "../domain/Direction.h"
 
 #define LEVEL_LOGICAL_COLS 16
 #define LEVEL_LOGICAL_ROWS 10
@@ -166,4 +168,21 @@ void Player_render(u8 playerId)
 
 void Player_manageMove(u8 playerId)
 {
+    Direction direction = PlayerController_manageMove(playerId);
+    if (direction == DIRECTION_UP) {
+
+    }
+    if (direction == DIRECTION_DOWN) {
+
+    }
+    if (direction == DIRECTION_RIGHT) {
+    
+    }
+    if (direction == DIRECTION_LEFT) {
+
+    }
+}
+
+void Player_manageShot(u8 playerId) {
+
 }

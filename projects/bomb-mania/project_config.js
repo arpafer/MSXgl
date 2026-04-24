@@ -57,7 +57,7 @@ LibModules = [ "system", "bios", "vdp", "print", "input", "memory", "clock" ];
 //-- Additional sources to be compiled and linked with the project (array)
 AddSources = ["game/views/menu.c", "game/views/level.c", "game/controllers/levelController.c",
               "game/controllers/timerController.c", "game/views/round.c", "game/views/countDown.c",
-              "game/views/player.c"
+              "game/views/player.c", "game/controllers/playerController.c"
 ];
 
 //-- Additional extern library to be linked with the project (array)

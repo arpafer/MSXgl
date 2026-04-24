@@ -15,8 +15,7 @@
 
 u8 stage_countdown_times[2] = {
     180,
-    120
-};
+    120};
 
 static u8 Level_getStageTime(u8 levelId)
 {
@@ -31,8 +30,8 @@ void Level_init()
     VDP_ClearVRAM();
 }
 
-static void Level_loadTileSetToAllBanks(const u8* patterns,
-                                        const u8* colors,
+static void Level_loadTileSetToAllBanks(const u8 *patterns,
+                                        const u8 *colors,
                                         u16 tileCount,
                                         u8 offset)
 {
@@ -49,27 +48,27 @@ static u8 Level_getTileBaseFromBlock(u8 blockId)
 {
     switch (blockId)
     {
-        case LEVEL_BLOCK_INDESTRUCTIBLE:
-            return LEVEL_TILE_BASE_OFFSET + 4;
+    case LEVEL_BLOCK_INDESTRUCTIBLE:
+        return LEVEL_TILE_BASE_OFFSET + 4;
 
-        case LEVEL_BLOCK_DESTRUCTIBLE:
-            return LEVEL_TILE_BASE_OFFSET + 8;
+    case LEVEL_BLOCK_DESTRUCTIBLE:
+        return LEVEL_TILE_BASE_OFFSET + 8;
 
-        case LEVEL_BLOCK_FLOOR:
-        default:
-            return LEVEL_TILE_BASE_OFFSET + 0;
+    case LEVEL_BLOCK_FLOOR:
+    default:
+        return LEVEL_TILE_BASE_OFFSET + 0;
     }
 }
 
 static void Level_renderBlock2x2(u8 x, u8 y, u8 tileBase)
 {
-    VDP_Poke_GM2(x,     y,     tileBase + 0);
-    VDP_Poke_GM2(x + 1, y,     tileBase + 1);
-    VDP_Poke_GM2(x,     y + 1, tileBase + 2);
+    VDP_Poke_GM2(x, y, tileBase + 0);
+    VDP_Poke_GM2(x + 1, y, tileBase + 1);
+    VDP_Poke_GM2(x, y + 1, tileBase + 2);
     VDP_Poke_GM2(x + 1, y + 1, tileBase + 3);
 }
 
-static u8 Level_getSafeLogicCols(const TileInfo* tilesInfo)
+static u8 Level_getSafeLogicCols(const TileInfo *tilesInfo)
 {
     if (tilesInfo->logicMapCols < LEVEL_LOGICAL_MAX_COLS)
         return tilesInfo->logicMapCols;
@@ -77,7 +76,7 @@ static u8 Level_getSafeLogicCols(const TileInfo* tilesInfo)
     return LEVEL_LOGICAL_MAX_COLS;
 }
 
-static u8 Level_getSafeLogicRows(const TileInfo* tilesInfo)
+static u8 Level_getSafeLogicRows(const TileInfo *tilesInfo)
 {
     if (tilesInfo->logicMapRows < LEVEL_LOGICAL_MAX_ROWS)
         return tilesInfo->logicMapRows;
@@ -99,13 +98,13 @@ static void Level_fillScreenWithFloor(void)
     }
 }
 
-static void Level_renderLogicalMap(const TileInfo* tilesInfo)
+static void Level_renderLogicalMap(const TileInfo *tilesInfo)
 {
     u8 row;
     u8 maxCols;
     u8 maxRows;
 
-    Level_fillScreenWithFloor();   
+    Level_fillScreenWithFloor();
 
     if ((tilesInfo == 0) || (tilesInfo->logicMap == 0))
         return;
@@ -133,7 +132,7 @@ static void Level_renderLogicalMap(const TileInfo* tilesInfo)
 
 void Level_loadTiles(unsigned char levelId)
 {
-    const TileInfo* tilesInfo = LevelController_getTilesInfo(levelId);
+    const TileInfo *tilesInfo = LevelController_getTilesInfo(levelId);
     u16 tileCount;
 
     if (tilesInfo == 0)
@@ -152,23 +151,26 @@ void Level_loadTiles(unsigned char levelId)
     Level_renderLogicalMap(tilesInfo);
 }
 
-void Level_render(u8 levelId)
+void Level_render(u8 levelId, u8 numPlayers)
 {
     u8 stageTime = Level_getStageTime(levelId);
 
     Level_init();
     Level_loadTiles(levelId);
     CountDown_render(stageTime);
-    Player_render(1);
-    Player_render(2);
-    Player_render(3);
-    Player_render(4);
+    for (int i = 1; i <= numPlayers; i++)
+    {
+        Player_render(i);
+    }
 }
 
-bool Level_isEnded(u8 levelId)
+bool Level_isEnded(u8 levelId, u8 numPlayers)
 {
     u8 stageTime = Level_getStageTime(levelId);
     bool ended = CountDown_isEnded(stageTime);
-
+    for (int i = 1; i <= numPlayers; i++) {
+        Player_manageMove(i);
+        Player_manageShot(i);
+    }
     return ended;
 }

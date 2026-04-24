@@ -57,15 +57,15 @@ void main()
 		// Print_DrawChar(g_ChrAnim[count++ % 4]);
 		Halt();
 	}	 */
-    unsigned char option = Menu_getSelectedOption();	
+    u8 numPlayers = Menu_getSelectedOption();	
 	bool exit = FALSE;
 	u8 levelId = 1;
 	while (!exit) {
 	   Round_render(levelId);
 	   while (!Round_isRoundEnded());
 
-       Level_render(levelId);
-	   while (!Level_isEnded(levelId));
+       Level_render(levelId, numPlayers);
+	   while (!Level_isEnded(levelId, numPlayers));
 	   exit = TRUE;
 	}
 	exit = FALSE;
