@@ -4,4 +4,4 @@
 
 Player *PlayerController_init(u8 playerId);
 
-Direction PlayerController_manageMove(u8 playerId, Player **player);
+Direction PlayerController_manageMove(u8 playerId, Player **player, u8* logicMap);

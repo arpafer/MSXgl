@@ -298,10 +298,10 @@ static u8 Player_getWalkFrame(u8 playerId, Direction direction)
     return Player_getFrameIdle(playerId);
 }
 
-void Player_manageMove(u8 playerId)
+void Player_manageMove(u8 playerId, u8* logicMap)
 {
     Player *player = 0;
-    Direction direction = PlayerController_manageMove(playerId, &player);
+    Direction direction = PlayerController_manageMove(playerId, &player, logicMap);
 
     if (player != 0)
         Player_draw(playerId, player, Player_getWalkFrame(playerId, direction));

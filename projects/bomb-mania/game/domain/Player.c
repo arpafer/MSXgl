@@ -11,9 +11,11 @@ static Position *Player_getInitialPixelPosition(u8 playerId, Position *logicPosi
 }
 
 void Player_init(Player *player, u8 playerId, u8 velocity, Position *position, u8 scaleType) {
+    
     player->id = playerId;
     player->velocity = velocity;
     player->logicPosition = position;
+    player->scaleFactor = scaleType;
     player->pixelPosition = Player_getInitialPixelPosition(playerId, position, scaleType);
 }
 
@@ -27,18 +29,27 @@ bool Player_isMoving(Player *player) {
     return TRUE;
 }
 
+static void Player_updateLogicPosition(Player *player) {
+   player->logicPosition->x = player->pixelPosition->x / player->scaleFactor;
+   player->logicPosition->y = player->pixelPosition->y / player->scaleFactor;
+}
+
 void Player_moveRight(Player *player) {
    player->pixelPosition->x++;
+   Player_updateLogicPosition(player);
 }
 
 void Player_moveLeft(Player *player) {
    player->pixelPosition->x--;
+   Player_updateLogicPosition(player);
 }
 
 void Player_moveUp(Player *player) {
    player->pixelPosition->y--;
+   Player_updateLogicPosition(player);
 }
 
 void Player_moveDown(Player *player) {
    player->pixelPosition->y++;
+   Player_updateLogicPosition(player);
 }

@@ -19,6 +19,7 @@ typedef struct PlayerStruct
     u8 velocity;
     Position *logicPosition;
     Position *pixelPosition;
+    u8 scaleFactor;
 } Player;
 
 #endif

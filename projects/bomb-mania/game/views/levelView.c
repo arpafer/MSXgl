@@ -13,6 +13,8 @@
 #define LEVEL_LOGICAL_MAX_COLS (LEVEL_PHYSICAL_COLS / 2)
 #define LEVEL_LOGICAL_MAX_ROWS (LEVEL_PHYSICAL_ROWS / 2)
 
+static u8* logicMap;
+
 u8 stage_countdown_times[2] = {
     180,
     120};
@@ -157,6 +159,7 @@ void Level_render(u8 levelId, u8 numPlayers)
 
     Level_init();
     Level_loadTiles(levelId);
+    logicMap = LevelController_getLogicMap(levelId);
     CountDown_render(stageTime);
     for (int i = 1; i <= numPlayers; i++)
     {
@@ -169,7 +172,7 @@ bool Level_isEnded(u8 levelId, u8 numPlayers)
     u8 stageTime = Level_getStageTime(levelId);
     bool ended = CountDown_isEnded(stageTime);
     for (int i = 1; i <= numPlayers; i++) {
-        Player_manageMove(i);
+        Player_manageMove(i, logicMap);
         Player_manageShot(i);
     }
     return ended;
