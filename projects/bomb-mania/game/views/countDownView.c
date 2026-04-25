@@ -1,7 +1,7 @@
 #include "msxgl.h"
 #include "vdp.h"
 
-#include "countDown.h"
+#include "countDownView.h"
 #include "../controllers/timerController.h"
 
 // #include "font/font_mgl_sample6.h"
@@ -27,6 +27,14 @@ static void CountDown_printTime(void)
     Print_DrawFormat("Time: %d", g_CountDown);
 }
 
+static void CountDown_printTimeDigits(void)
+{
+    Print_SetPosition(((ROUND_SCREEN1_WIDTH_CHR - 8) / 2) + 6, 23);
+    Print_DrawChar('0' + (g_CountDown / 100));
+    Print_DrawChar('0' + ((g_CountDown / 10) % 10));
+    Print_DrawChar('0' + (g_CountDown % 10));
+}
+
 static void CountDown_updateTime(u8 seconds)
 {
     u8 remainingSeconds;
@@ -39,7 +47,7 @@ static void CountDown_updateTime(u8 seconds)
         return;
 
     g_CountDown = remainingSeconds;
-    CountDown_printTime();
+    CountDown_printTimeDigits();
 }
 
 void CountDown_render(u8 seconds)

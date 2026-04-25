@@ -1,7 +1,12 @@
-#include "msxgl.h"
 
+#ifndef POSITION_STRUCT
+#define POSITION_STRUCT
+
+#include "msxgl.h"
 typedef struct PositionStruct
 {
-    u8 row;
-    u8 col;
+    u8 y;
+    u8 x;
 } Position;
+
+#endif

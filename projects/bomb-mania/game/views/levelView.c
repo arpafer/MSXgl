@@ -1,9 +1,9 @@
 #include "msxgl.h"
 #include "vdp.h"
-#include "level.h"
+#include "levelView.h"
 #include "../controllers/levelController.h"
-#include "countDown.h"
-#include "player.h"
+#include "countDownView.h"
+#include "playerView.h"
 
 #define LEVEL_TILE_BASE_OFFSET 239
 #define LEVEL_PHYSICAL_COLS 32

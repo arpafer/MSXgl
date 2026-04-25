@@ -1,6 +1,6 @@
 #include "msxgl.h"
 #include "vdp.h"
-#include "menu.h"
+#include "menuView.h"
 
 #define MSX_GL "\x01\x02\x03\x04\x05\x06"
 #include "font/font_mgl_sample6.h"

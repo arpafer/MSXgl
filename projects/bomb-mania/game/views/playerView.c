@@ -1,5 +1,5 @@
 #include "msxgl.h"
-#include "player.h"
+#include "playerView.h"
 #include "vdp.h"
 #include "../assets/playerSprites/player_sprite1.h"
 #include "../assets/playerSprites/player_sprite2.h"
@@ -8,8 +8,13 @@
 #include "../controllers/playerController.h"
 #include "../domain/Direction.h"
 
+#ifndef LEVEL_LOGICAL_COLS  
 #define LEVEL_LOGICAL_COLS 16
+#endif
+
+#ifndef LEVEL_LOGICAL_ROWS
 #define LEVEL_LOGICAL_ROWS 10
+#endif
 
 u16 Player_getPixelFromColumn(u8 column) {
    return column * 16;
@@ -146,8 +151,20 @@ u8 Player_getBasePattern(u8 playerId)
     return Player_getFramePattern(playerId, Player_getFrameIdle(playerId));
 }
 
+static void Player_draw(u8 playerId, Player *player)
+{
+    VDP_SetSpriteSM1(
+        playerId - 1,
+        player->pixelPosition->x,
+        player->pixelPosition->y,
+        Player_getBasePattern(playerId),
+        Player_getColor(playerId));
+}
+
 void Player_render(u8 playerId)
 {
+    Player *player = PlayerController_init(playerId);
+    
     const u8* patterns = Player_getSpritePatterns(playerId);
     if (patterns == 0)
         return;
@@ -158,28 +175,14 @@ void Player_render(u8 playerId)
         Player_getPatternIndex(playerId),
         Player_getPatternCount(playerId));
 
-    VDP_SetSpriteSM1(
-        playerId - 1,
-        Player_getPixelFromColumn(Player_getStartColumn(playerId)),
-        Player_getPixelFromRow(Player_getStartRow(playerId)),
-        Player_getBasePattern(playerId),
-        Player_getColor(playerId));
+    Player_draw(playerId, player);
 }
 
 void Player_manageMove(u8 playerId)
 {
-    Direction direction = PlayerController_manageMove(playerId);
-    if (direction == DIRECTION_UP) {
-
-    }
-    if (direction == DIRECTION_DOWN) {
-
-    }
-    if (direction == DIRECTION_RIGHT) {
-    
-    }
-    if (direction == DIRECTION_LEFT) {
-
+    Player *player = PlayerController_manageMove(playerId);
+    if (player != 0) {
+        Player_draw(playerId, player);
     }
 }
 

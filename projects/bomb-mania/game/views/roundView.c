@@ -1,6 +1,6 @@
 #include "msxgl.h"
 #include "vdp.h"
-#include "round.h"
+#include "roundView.h"
 
 #include "../assets/rounds/round_title_tiles.h"
 #include "../assets/rounds/round_number_tiles.h"

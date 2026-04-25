@@ -10,9 +10,9 @@
 // INCLUDES
 //=============================================================================
 #include "msxgl.h"
-#include "game/views/menu.h"
-#include "game/views/level.h"
-#include "game/views/round.h"
+#include "game/views/menuView.h"
+#include "game/views/levelView.h"
+#include "game/views/roundView.h"
 
 //=============================================================================
 // DEFINES
