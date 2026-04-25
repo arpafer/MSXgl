@@ -98,13 +98,14 @@ void PlayerController_updateSpritePixelPosition(u8 playerId, Direction direction
     }
 } 
 
-Player *PlayerController_manageMove(u8 playerId)
+Direction PlayerController_manageMove(u8 playerId, Player **player)
 {
     if (playerId == 1)
     {
         Direction direction = PlayerController_getArrowKeyboardDirection();
         PlayerController_updateSpritePixelPosition(playerId, direction);
-        return &players[playerId - 1];
+        *player = &players[playerId - 1];
+        return direction;
     }
-    return 0;
+    return DIRECTION_NONE;
 }

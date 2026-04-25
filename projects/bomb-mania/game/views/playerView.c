@@ -8,7 +8,7 @@
 #include "../controllers/playerController.h"
 #include "../domain/Direction.h"
 
-#ifndef LEVEL_LOGICAL_COLS  
+#ifndef LEVEL_LOGICAL_COLS
 #define LEVEL_LOGICAL_COLS 16
 #endif
 
@@ -16,47 +16,59 @@
 #define LEVEL_LOGICAL_ROWS 10
 #endif
 
-u16 Player_getPixelFromColumn(u8 column) {
-   return column * 16;
+u16 Player_getPixelFromColumn(u8 column)
+{
+    return column * 16;
 }
 
-u8 Player_getPixelFromRow(u8 row) {
+u8 Player_getPixelFromRow(u8 row)
+{
     return row * 16;
 }
 
-u8 Player_getStartColumn(u8 playerId) {
-    if (playerId == 1) {
+u8 Player_getStartColumn(u8 playerId)
+{
+    if (playerId == 1)
+    {
         return 1;
     }
-    if (playerId == 2) {
+    if (playerId == 2)
+    {
         return LEVEL_LOGICAL_COLS - 2;
     }
-    if (playerId == 3) {
-        return LEVEL_LOGICAL_COLS - 2; 
+    if (playerId == 3)
+    {
+        return LEVEL_LOGICAL_COLS - 2;
     }
-    if (playerId == 4) {
+    if (playerId == 4)
+    {
         return 1;
     }
     return 1;
 }
 
-u8 Player_getStartRow(u8 playerId) {
-    if (playerId == 1) {
+u8 Player_getStartRow(u8 playerId)
+{
+    if (playerId == 1)
+    {
         return 1;
     }
-    if (playerId == 2) {
+    if (playerId == 2)
+    {
         return LEVEL_LOGICAL_ROWS - 2;
     }
-    if (playerId == 3) {
-        return 1; 
+    if (playerId == 3)
+    {
+        return 1;
     }
-    if (playerId == 4) {
+    if (playerId == 4)
+    {
         return LEVEL_LOGICAL_ROWS - 2;
     }
     return 1;
 }
 
-const u8* Player_getSpritePatterns(u8 playerId)
+const u8 *Player_getSpritePatterns(u8 playerId)
 {
     if (playerId == 1)
         return g_Player1SpritePatterns;
@@ -123,17 +135,100 @@ u8 Player_getFrameIdle(u8 playerId)
     return PLAYER1_FRAME_IDLE;
 }
 
-u8 Player_getColor(u8 playerId) {
-    if (playerId == 1) {
+static u8 Player_getFrameDown(u8 playerId, u8 walkFrame)
+{
+    if (playerId == 1)
+    {
+        return walkFrame ? PLAYER1_FRAME_DOWN_1 : PLAYER1_FRAME_DOWN_0;
+    }
+    else if (playerId == 2)
+    {
+        return walkFrame ? PLAYER2_FRAME_DOWN_1 : PLAYER2_FRAME_DOWN_0;
+    }
+    else if (playerId == 3)
+    {
+        return walkFrame ? PLAYER3_FRAME_DOWN_1 : PLAYER3_FRAME_DOWN_0;
+    }
+    else if (playerId == 4)
+    {
+        return walkFrame ? PLAYER4_FRAME_DOWN_1 : PLAYER4_FRAME_DOWN_0;
+    }
+}
+
+static u8 Player_getFrameUp(u8 playerId, u8 walkFrame)
+{
+    if (playerId == 1)
+    {
+        return walkFrame ? PLAYER1_FRAME_UP_1 : PLAYER1_FRAME_UP_0;
+    }
+    else if (playerId == 2)
+    {
+        return walkFrame ? PLAYER2_FRAME_UP_1 : PLAYER2_FRAME_UP_0;
+    }
+    else if (playerId == 3)
+    {
+        return walkFrame ? PLAYER3_FRAME_UP_1 : PLAYER3_FRAME_UP_0;
+    }
+    else if (playerId == 4)
+    {
+        return walkFrame ? PLAYER4_FRAME_UP_1 : PLAYER4_FRAME_UP_0;
+    }
+}
+
+static u8 Player_getFrameRight(u8 playerId, u8 walkFrame) {
+    if (playerId == 1)
+    {
+        return walkFrame ? PLAYER1_FRAME_RIGHT_1 : PLAYER1_FRAME_RIGHT_0;
+    }
+    else if (playerId == 2)
+    {
+        return walkFrame ? PLAYER2_FRAME_RIGHT_1 : PLAYER2_FRAME_RIGHT_0;
+    }
+    else if (playerId == 3)
+    {
+        return walkFrame ? PLAYER3_FRAME_RIGHT_1 : PLAYER3_FRAME_RIGHT_0;
+    }
+    else if (playerId == 4)
+    {
+        return walkFrame ? PLAYER4_FRAME_RIGHT_1 : PLAYER4_FRAME_RIGHT_0;
+    }
+}
+
+static u8 Player_getFrameLeft(u8 playerId, u8 walkFrame) {
+    if (playerId == 1)
+    {
+        return walkFrame ? PLAYER1_FRAME_LEFT_1 : PLAYER1_FRAME_LEFT_0;
+    }
+    else if (playerId == 2)
+    {
+        return walkFrame ? PLAYER2_FRAME_LEFT_1 : PLAYER2_FRAME_LEFT_0;
+    }
+    else if (playerId == 3)
+    {
+        return walkFrame ? PLAYER3_FRAME_LEFT_1 : PLAYER3_FRAME_LEFT_0;
+    }
+    else if (playerId == 4)
+    {
+        return walkFrame ? PLAYER4_FRAME_LEFT_1 : PLAYER4_FRAME_LEFT_0;
+    }
+}
+
+u8 Player_getColor(u8 playerId)
+{
+    if (playerId == 1)
+    {
         return COLOR_DARK_BLUE;
     }
-    if (playerId == 2) {
+    if (playerId == 2)
+    {
         return COLOR_MAGENTA;
     }
-    if (playerId == 3) {
+    if (playerId == 3)
+    {
         return COLOR_DARK_RED;
     }
-    if (playerId == 4) {
+    if (playerId == 4)
+    {
         return COLOR_BLACK;
     }
     return COLOR_DARK_BLUE;
@@ -151,21 +246,21 @@ u8 Player_getBasePattern(u8 playerId)
     return Player_getFramePattern(playerId, Player_getFrameIdle(playerId));
 }
 
-static void Player_draw(u8 playerId, Player *player)
+static void Player_draw(u8 playerId, Player *player, u8 frame)
 {
     VDP_SetSpriteSM1(
         playerId - 1,
         player->pixelPosition->x,
         player->pixelPosition->y,
-        Player_getBasePattern(playerId),
+        Player_getFramePattern(playerId, frame),
         Player_getColor(playerId));
 }
 
 void Player_render(u8 playerId)
 {
     Player *player = PlayerController_init(playerId);
-    
-    const u8* patterns = Player_getSpritePatterns(playerId);
+
+    const u8 *patterns = Player_getSpritePatterns(playerId);
     if (patterns == 0)
         return;
 
@@ -175,17 +270,44 @@ void Player_render(u8 playerId)
         Player_getPatternIndex(playerId),
         Player_getPatternCount(playerId));
 
-    Player_draw(playerId, player);
+    Player_draw(playerId, player, Player_getFrameIdle(playerId));
+}
+
+static u8 Player_getWalkFrame(u8 playerId, Direction direction)
+{
+    static u8 animationTick = 0;
+    u8 walkFrame = (animationTick >> 3) & 1;
+
+    animationTick++;
+
+    if (direction == DIRECTION_NONE)
+        return Player_getFrameIdle(playerId);
+
+    if (direction == DIRECTION_DOWN)
+        return Player_getFrameDown(playerId, walkFrame);
+
+    if (direction == DIRECTION_UP)
+        return Player_getFrameUp(playerId, walkFrame);
+
+    if (direction == DIRECTION_LEFT)
+        return Player_getFrameLeft(playerId, walkFrame);
+
+    if (direction == DIRECTION_RIGHT)
+        return Player_getFrameRight(playerId, walkFrame);
+
+    return Player_getFrameIdle(playerId);
 }
 
 void Player_manageMove(u8 playerId)
 {
-    Player *player = PlayerController_manageMove(playerId);
-    if (player != 0) {
-        Player_draw(playerId, player);
-    }
+    Player *player = 0;
+    Direction direction = PlayerController_manageMove(playerId, &player);
+
+    if (player != 0)
+        Player_draw(playerId, player, Player_getWalkFrame(playerId, direction));
 }
 
-void Player_manageShot(u8 playerId) {
 
+void Player_manageShot(u8 playerId)
+{
 }
