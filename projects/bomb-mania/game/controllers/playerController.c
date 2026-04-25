@@ -31,6 +31,23 @@ static Direction PlayerController_getArrowKeyboardDirection(void)
     return DIRECTION_NONE;
 }
 
+static Direction PlayerController_getAwszKeyboardDirection(void)
+{
+    if (Keyboard_IsKeyPressed(KEY_W))
+        return DIRECTION_UP;
+
+    if (Keyboard_IsKeyPressed(KEY_S))
+        return DIRECTION_RIGHT;
+
+    if (Keyboard_IsKeyPressed(KEY_Z))
+        return DIRECTION_DOWN;
+
+    if (Keyboard_IsKeyPressed(KEY_A))
+        return DIRECTION_LEFT;
+
+    return DIRECTION_NONE;
+}
+
 static Position *PlayerController_getPlayer1InitialPosition()
 {
     Position *position = &g_playerInitialPositions[0];
@@ -103,6 +120,11 @@ Direction PlayerController_manageMove(u8 playerId, Player **player)
     if (playerId == 1)
     {
         Direction direction = PlayerController_getArrowKeyboardDirection();
+        PlayerController_updateSpritePixelPosition(playerId, direction);
+        *player = &players[playerId - 1];
+        return direction;
+    } else if (playerId == 2) {
+        Direction direction = PlayerController_getAwszKeyboardDirection();
         PlayerController_updateSpritePixelPosition(playerId, direction);
         *player = &players[playerId - 1];
         return direction;
