@@ -113,21 +113,33 @@ Player *PlayerController_init(u8 playerId)
     return player;
 }
 
-bool PlayerController_canMoveTo(u8 row, u8 col, u8* logicMap) {
-   return logicMap[((row) * LEVEL_LOGICAL_COLS) + (col)] == LEVEL_BLOCK_FLOOR;
+bool PlayerController_canMoveTo(u8 y, u8 x, u8* logicMap, u8 scaleFactor, Direction direction) {   
+   u8 row = y / scaleFactor;   
+   u8 col = x / scaleFactor;   
+   u8 restRow = y % scaleFactor;
+   u8 restCol = x % scaleFactor;
+
+   if ((direction == DIRECTION_RIGHT || direction == DIRECTION_LEFT) && restRow > 0) {
+     row++;
+   }
+  // if ((direction == DIRECTION_UP || direction == DIRECTION_DOWN) && restCol > 0) {
+  //    col++;
+  // }
+   return logicMap[((row * scaleFactor) + col)] == LEVEL_BLOCK_FLOOR;
 }
 
 void PlayerController_updateSpritePixelPosition(u8 playerId, Direction direction, u8 *logicMap) {
     Player *player = &players[playerId - 1];
-    u8 row = player->logicPosition->y;
-    u8 col = player->logicPosition->x;
-    if (direction == DIRECTION_RIGHT && PlayerController_canMoveTo(row, col + 1, logicMap)) {        
+    u8 y = player->pixelPosition->y;
+    u8 x = player->pixelPosition->x;
+    if (direction == DIRECTION_RIGHT && 
+          PlayerController_canMoveTo(y, x + player->scaleFactor, logicMap, player->scaleFactor, direction)) {        
         Player_moveRight(player);
-    } else if (direction == DIRECTION_LEFT && PlayerController_canMoveTo(row, col - 1, logicMap)) {
+    } else if (direction == DIRECTION_LEFT && PlayerController_canMoveTo(y, x - 1, logicMap, player->scaleFactor, direction)) {
         Player_moveLeft(player);
-    } else if (direction == DIRECTION_UP && PlayerController_canMoveTo(row - 1, col, logicMap)) {
+    } else if (direction == DIRECTION_UP && PlayerController_canMoveTo(y - 1, x, logicMap, player->scaleFactor, direction)) {
         Player_moveUp(player);
-    } else if (direction == DIRECTION_DOWN && PlayerController_canMoveTo(row + 1, col, logicMap)) {
+    } else if (direction == DIRECTION_DOWN && PlayerController_canMoveTo(y + player->scaleFactor, x, logicMap, player->scaleFactor, direction)) {
         Player_moveDown(player);
     }
 } 
