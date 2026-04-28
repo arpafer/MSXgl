@@ -7,6 +7,8 @@
 #include "../assets/playerSprites/player_sprite4.h"
 #include "../controllers/playerController.h"
 #include "../domain/Direction.h"
+#include "../domain/Bomb.h"
+#include "BombView.h"
 
 #ifndef LEVEL_LOGICAL_COLS
 #define LEVEL_LOGICAL_COLS 16
@@ -308,6 +310,16 @@ void Player_manageMove(u8 playerId, u8* logicMap)
 }
 
 
-void Player_manageShot(u8 playerId)
+bool Player_hasShot(u8 playerId)
 {
+    Player *player = 0;
+    bool hasShot = PlayerController_hasShot(playerId, &player);
+    return hasShot;
+}
+
+void PlayerView_renderBomb(Bomb *bomb, u8 playerId) {
+   Player *player = PlayerController_getPlayerWithId(playerId);
+   Bomb_copyPosition(player->logicPosition, &(bomb->logicPosition));
+   Bomb_copyPosition(player->pixelPosition, &(bomb->pixelPosition));
+   BombView_render(bomb);
 }

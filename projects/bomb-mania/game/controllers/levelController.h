@@ -1,6 +1,8 @@
 
 #include "msxgl.h"
 
+#include "../domain/Bomb.h"
+
 #ifndef LEVEL_BLOCK_FLOOR
 #define LEVEL_BLOCK_FLOOR          0
 #endif
@@ -21,6 +23,10 @@ typedef struct _TileInfoDef {
    u8 logicMapRows;
 } TileInfo;
 
+void LevelController_initBombPool();
+
 const TileInfo* LevelController_getTilesInfo(unsigned char nivelId); 
 
 u8* LevelController_getLogicMap(unsigned char nivelId);
+
+Bomb *LevelController_getAvailableBomb();

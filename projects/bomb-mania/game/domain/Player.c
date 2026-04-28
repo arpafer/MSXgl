@@ -35,21 +35,21 @@ static void Player_updateLogicPosition(Player *player) {
 }
 
 void Player_moveRight(Player *player) {
-   player->pixelPosition->x++;
+   player->pixelPosition->x += player->velocity;
    Player_updateLogicPosition(player);
 }
 
 void Player_moveLeft(Player *player) {
-   player->pixelPosition->x--;
+   player->pixelPosition->x -= player->velocity;
    Player_updateLogicPosition(player);
 }
 
 void Player_moveUp(Player *player) {
-   player->pixelPosition->y--;
+   player->pixelPosition->y -= player->velocity;
    Player_updateLogicPosition(player);
 }
 
 void Player_moveDown(Player *player) {
-   player->pixelPosition->y++;
+   player->pixelPosition->y += player->velocity;
    Player_updateLogicPosition(player);
 }

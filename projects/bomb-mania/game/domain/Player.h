@@ -10,6 +10,9 @@
 #define SPRITE_SCALE_16 16
 #endif
 
+#ifndef MAX_BOMB_PER_PLAYER
+  #define MAX_BOMB_PER_PLAYER 4
+#endif
 
 #ifndef PLAYER_STRUCT
 #define PLAYER_STRUCT
@@ -20,6 +23,7 @@ typedef struct PlayerStruct
     Position *logicPosition;
     Position *pixelPosition;
     u8 scaleFactor;
+    u8 BombIds[MAX_BOMB_PER_PLAYER];
 } Player;
 
 #endif

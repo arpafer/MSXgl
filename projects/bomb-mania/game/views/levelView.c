@@ -24,12 +24,15 @@ static u8 Level_getStageTime(u8 levelId)
     return stage_countdown_times[levelId - 1];
 }
 
+
+
 void Level_init()
 {
     VDP_Initialize();
     VDP_SetMode(VDP_MODE_SCREEN2);
     VDP_EnableVBlank(TRUE);
     VDP_ClearVRAM();
+
 }
 
 static void Level_loadTileSetToAllBanks(const u8 *patterns,
@@ -161,6 +164,7 @@ void Level_render(u8 levelId, u8 numPlayers)
     Level_loadTiles(levelId);
     logicMap = LevelController_getLogicMap(levelId);
     CountDown_render(stageTime);
+    LevelController_initBombPool();
     for (int i = 1; i <= numPlayers; i++)
     {
         Player_render(i);
@@ -173,7 +177,13 @@ bool Level_isEnded(u8 levelId, u8 numPlayers)
     bool ended = CountDown_isEnded(stageTime);
     for (int i = 1; i <= numPlayers; i++) {
         Player_manageMove(i, logicMap);
-        Player_manageShot(i);
+        bool hasShot = Player_hasShot(i);
+        if (hasShot) {
+           Bomb *availableBomb = LevelController_getAvailableBomb();
+           if (availableBomb != 0) {
+              PlayerView_renderBomb(availableBomb, i);           
+           }
+        }
     }
     return ended;
 }
