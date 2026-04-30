@@ -4,6 +4,7 @@
 #include "vdp.h"
 
 #define BOMB_TILE_BASE_OFFSET 251
+#define BOMB_LOGIC_TO_TILE_SCALE 2
 
 static void BombView_loadTilesToAllBanks(void)
 {
@@ -34,8 +35,8 @@ void BombView_render(Bomb *bomb)
 
    BombView_loadTilesToAllBanks();
 
-   tileX = bomb->pixelPosition.x / 8;
-   tileY = bomb->pixelPosition.y / 8;
+   tileX = bomb->logicPosition.x * BOMB_LOGIC_TO_TILE_SCALE;
+   tileY = bomb->logicPosition.y * BOMB_LOGIC_TO_TILE_SCALE;
 
    BombView_renderTile2x2(tileX, tileY);
 
