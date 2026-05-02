@@ -209,3 +209,13 @@ bool PlayerController_hasShot(u8 playerId, Player **player)
 
     return FALSE;
 }
+
+void PlayerController_removeBombFromPlayer(Player *player, u8 bombId) {
+   u8 i;
+   for (i = 0; i < player->bombCount; i++) {
+      if (player->BombIds[i] == bombId) {
+         player->bombCount--;
+         break;
+      }
+   }
+}

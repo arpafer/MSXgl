@@ -11,6 +11,7 @@
 #define BOMB_EXPLOSION_TIMER_OFFSET 64
 #define BOMB_EXPLOSION_SECONDS 1
 #define BOMB_EXPLOSION_MAX_BOMBS 16
+#define BOMB_EXPLOSION_INVALID_POSITION 0xFF
 
 #ifndef LEVEL_PHYSICAL_COLS
   #define LEVEL_PHYSICAL_COLS 32
@@ -75,12 +76,18 @@ static void BombView_renderExplosionLine(Position *positions, u8 scope)
       return;
 
    for (i = 0; i < scope; i++)
-      BombView_renderExplosionTile(&positions[i]);
+   {
+      if ((positions[i].x != BOMB_EXPLOSION_INVALID_POSITION) &&
+          (positions[i].y != BOMB_EXPLOSION_INVALID_POSITION))
+      {
+         BombView_renderExplosionTile(&positions[i]);
+      }
+   }
 }
 
 static u8 BombView_getExplosionFrame(u8 bombIndex)
 {
-   u8 ticksPerFrame = Sys_Is60Hz() ? 20 : 17;
+   u8 ticksPerFrame = Sys_Is60Hz() ? 15 : 13;
    u8 frame = g_BombExplosionTicks[bombIndex] / ticksPerFrame;
 
    if (frame >= EXPLOSION_TILE_FRAME_COUNT)

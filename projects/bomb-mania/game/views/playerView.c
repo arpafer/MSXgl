@@ -339,6 +339,9 @@ void PlayerView_updateBombsStateOfPlayer(u8 playerId) {
         if (bomb != 0) {
             if (Bomb_isExploding(bomb)) {
                BombView_renderExplosion(bomb, 1);                              
+            } else if (Bomb_isExploited(bomb)) {
+               Bomb_setAsAvailable(bomb);
+               PlayerController_removeBombFromPlayer(player, bombId);
             }
         }
      }
