@@ -176,6 +176,7 @@ bool Level_isEnded(u8 levelId, u8 numPlayers)
     u8 stageTime = Level_getStageTime(levelId);
     bool ended = CountDown_isEnded(stageTime);
     for (int i = 1; i <= numPlayers; i++) {
+        PlayerView_updateBombsStateOfPlayer(i);
         Player_manageMove(i, logicMap);
         bool hasShot = Player_hasShot(i);
         if (hasShot) {
@@ -185,5 +186,6 @@ bool Level_isEnded(u8 levelId, u8 numPlayers)
            }
         }
     }
+    LevelController_updateBombsState();
     return ended;
 }

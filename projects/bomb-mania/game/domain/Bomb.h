@@ -32,4 +32,14 @@ typedef struct _Bomb {
 
 bool Bomb_isAvailable(Bomb *bomb);
 void Bomb_copyPosition(Position *originPosition, Position *targetPosition);
+bool Bomb_isExploding(Bomb *bomb);
 
+bool Bomb_isReadyForExplosion(Bomb *bomb);
+
+bool Bomb_isExploited(Bomb *bomb);
+
+void Bomb_setAsReady(Bomb *bomb);
+
+void Bomb_setExploding(Bomb *bomb);
+void Bomb_setAsAvailable(Bomb *bomb);
+void Bomb_setAsExploited(Bomb *bomb);

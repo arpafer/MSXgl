@@ -11,7 +11,7 @@
 #endif
 
 #ifndef MAX_BOMB_PER_PLAYER
-  #define MAX_BOMB_PER_PLAYER 4
+  #define MAX_BOMB_PER_PLAYER 1
 #endif
 
 #ifndef PLAYER_STRUCT
@@ -24,7 +24,9 @@ typedef struct PlayerStruct
     Position *pixelPosition;
     u8 scaleFactor;
     u8 BombIds[MAX_BOMB_PER_PLAYER];
+    u8 bombCount;
 } Player;
+
 
 #endif
 
@@ -38,3 +40,6 @@ void Player_moveRight(Player *player);
 void Player_moveLeft(Player *player);
 void Player_moveUp(Player *player);
 void Player_moveDown(Player *player);
+
+bool Player_canPlaceBomb(Player *player);
+void Player_setBombPlaced(Player *player, u8 bombId);

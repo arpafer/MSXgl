@@ -3,6 +3,8 @@
 #include "../assets/level1/tiles/level1_tileset.h"
 #include "../assets/level1/map_level1.h"
 #include "../domain/Bomb.h"
+#include "../domain/Position.h"
+#include "timerController.h"
 
 static u8 g_Level1LogicMapCopy[LEVEL1_LOGIC_SIZE];
 static bool g_Level1LogicMapCopyInitialized = FALSE;
@@ -44,6 +46,40 @@ Bomb *LevelController_getAvailableBomb() {
     return 0;
 }
 
+void LevelController_updateBombsState() {
+    for (int i = 0; i < BOMB_NUM_MAX_PER_PLAYER * 4; i++) {
+      Bomb *_bomb = &g_bombPool[i];
+      bool _countdownToExplosionEnding = TimerController_countSeconds(_bomb->id, _bomb->timeToExplode);
+      if (Bomb_isReadyForExplosion(_bomb) && _countdownToExplosionEnding) {         
+         Bomb_setExploding(_bomb);
+      }
+    }
+}
+
+u8* LevelController_getExplodingBombIds() {
+    static u8 explodingBombIds[BOMB_NUM_MAX_PER_PLAYER * 4];
+    u8 count = 0;
+    for (int i = 0; i < BOMB_NUM_MAX_PER_PLAYER * 4; i++) {
+      Bomb *_bomb = &g_bombPool[i];
+      if (_bomb->state == EXPLODING_BOMB) {
+         explodingBombIds[count] = _bomb->id;
+         count++;
+      }
+    }
+    explodingBombIds[count] = 0xFF; // End of list marker
+    return explodingBombIds; 
+}
+
+Bomb *LevelController_getBombById(u8 bombId) {
+    for (int i = 0; i < BOMB_NUM_MAX_PER_PLAYER * 4; i++) {
+      Bomb *_bomb = &g_bombPool[i];
+      if (_bomb->id == bombId) {
+        return _bomb;
+      }
+    }
+    return 0;
+}
+
 static void LevelController_initLevel1LogicMapCopy(void)
 {
     if (g_Level1LogicMapCopyInitialized)
@@ -79,4 +115,20 @@ u8* LevelController_getLogicMap(unsigned char nivelId)
         LevelController_initLevel1LogicMapCopy();
         return g_Level1LogicMapCopy;
     }
+}
+
+Position* LevelController_getUpFreePositionsFromCurrentPosition(Position *position, u8 scope) {
+   return 0;
+}
+
+Position* LevelController_getDownFreePositionsFromCurrentPosition(Position *position, u8 scope) {
+   return 0;
+}
+
+Position* LevelController_getLeftFreePositionsFromCurrentPosition(Position *position, u8 scope) {
+    return 0;
+}
+
+Position* LevelController_getRightFreePositionsFromCurrentPosition(Position *position, u8 scope) {
+    return 0;
 }

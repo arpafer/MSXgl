@@ -1,0 +1,158 @@
+@startuml
+
+ title modelo del dominio de Bomb manía
+
+package domain {
+
+class Nivel {
+  +setNumPlayers(numPlayers)
+  +canMove(playerId, direction)
+  +move(playerId, direction)
+  +canSetBomb(playerId)
+  +isDead(playerId)
+  +getBusyCells(): CellInfo[]
+  +isTimeout()
+}
+
+class Player {
+  -velocity
+  -id
+  +move(Position)
+  +die()
+  +addBomb()
+  +removeBomb()
+  +addPowerUp()
+  +removePowerUp()
+}
+
+class Timer {
+  -countdown
+  -maxTime
+  +isTimeOut()
+  +discountSecond()
+}
+
+class Position {
+  -x
+  -y
+}
+
+class Bomb {
+  -active
+  -exploding
+  -explosionDuration
+  -timer
+  -maxTimeForExplode
+  +put()
+  +blow()
+  +canExplode()
+}
+
+class Map {
+  -columns
+  -rows
+  +canMove(Player, direction)
+  +move(Player, direction)
+  +addBomb(Player)
+  +canSetBomb(Player)
+  +isDead(Player)
+  +Blow()
+  +getBusyCells(): CellInfo
+  +explodeActiveBombs()
+}
+
+class CellInfo {
+  -busy: bool
+}
+
+enum ObjectType {
+  -DestructibeBlock
+  -IndestructibleBlock
+  -Player
+  -Bomb
+  -Burst
+}
+
+abstract class PowerUp {
+  -actived
+  -amount
+  -expirationTime
+  +active()
+  +isActived()
+  +deactive()
+}
+
+class DestructibleBlock {
+  -state
+}
+
+enum Direction {
+  left
+  right
+  up
+  down
+}
+
+enum BlockState {
+  intact
+  destroyed
+}
+
+enum PlayerState {
+  die
+  idle
+  moving
+}
+
+ Nivel --> Map
+ Nivel *--> Timer
+ Nivel --> "2..4" Player
+ Nivel *--> "0..n" PowerUp
+ Nivel ..> "row x col" CellInfo
+ Map *--> "1..n" IndestructibleBlock
+ Map *--> "1..n" DestructibleBlock
+ Map ..> Direction
+ Map --> "2..4" Player
+ Map ..> "col x row" CellInfo
+ Map --> "0..n" Bomb
+ Player *--> Position
+ Player --> "0..n" Bomb
+ Player *--> PlayerState
+ Player --> "0..n" PowerUp
+ IndestructibleBlock *--> Position
+ DestructibleBlock *--> Position
+ DestructibleBlock *--> BlockState
+ CellInfo --> "1..n" ObjectType: objectType 
+ PowerUp --> Position
+ Map *--> "r x c" Position
+}
+
+class MainController {
+
+}
+
+interface InputInterface {
+  #getDirection()
+  #getShot()
+}
+
+class keyInterface extends InputInterface {
+ 
+}
+
+class JostickInterface extends InputInterface {
+}
+
+class Renderer {
+  +render()
+}
+
+MainController --> "2..4" InputInterface
+
+MainController --> Nivel
+
+InputInterface --> Direction
+MainController --> Renderer
+Renderer --> "r x c" CellInfo
+MainController ..> "r x c" CellInfo
+@enduml

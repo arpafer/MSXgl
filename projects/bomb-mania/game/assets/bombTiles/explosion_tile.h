@@ -1,0 +1,291 @@
+#pragma once
+
+#include "msxgl.h"
+#include "color.h"
+
+#define EXPLOSION_TILE_FRAME_COUNT 3
+#define EXPLOSION_TILES_PER_FRAME 4
+#define EXPLOSION_TILE_COUNT (EXPLOSION_TILE_FRAME_COUNT * EXPLOSION_TILES_PER_FRAME)
+#define EXPLOSION_TILE_SIZE 8
+
+#define EXPLOSION_FRAME_0 0
+#define EXPLOSION_FRAME_1 1
+#define EXPLOSION_FRAME_2 2
+
+#define EXPLOSION_TILE_FRAME_BASE(frame) ((frame) * EXPLOSION_TILES_PER_FRAME)
+#define EXPLOSION_TILE_TL(frame)         (EXPLOSION_TILE_FRAME_BASE(frame) + 0)
+#define EXPLOSION_TILE_TR(frame)         (EXPLOSION_TILE_FRAME_BASE(frame) + 1)
+#define EXPLOSION_TILE_BL(frame)         (EXPLOSION_TILE_FRAME_BASE(frame) + 2)
+#define EXPLOSION_TILE_BR(frame)         (EXPLOSION_TILE_FRAME_BASE(frame) + 3)
+
+// SCREEN 2 explosion tile inspired by the Bomb-Mania C64 blast clouds.
+// Each animation frame is a 16x16 block made of 2x2 hardware tiles.
+static const u8 g_ExplosionTilePatterns[EXPLOSION_TILE_COUNT * EXPLOSION_TILE_SIZE] =
+{
+    // =========================================================
+    // FRAME 0 - compact white blast cloud
+    // =========================================================
+
+    // TL
+    0x07,
+    0x1F,
+    0x3F,
+    0x7D,
+    0xFB,
+    0xFF,
+    0x7F,
+    0x3F,
+
+    // TR
+    0xE0,
+    0xF8,
+    0xFC,
+    0xBE,
+    0xDF,
+    0xFF,
+    0xFE,
+    0xFC,
+
+    // BL
+    0x7F,
+    0xFF,
+    0xFB,
+    0x7D,
+    0x3F,
+    0x1F,
+    0x07,
+    0x00,
+
+    // BR
+    0xFE,
+    0xFF,
+    0xDF,
+    0xBE,
+    0xFC,
+    0xF8,
+    0xE0,
+    0x00,
+
+    // =========================================================
+    // FRAME 1 - wider yellow flash with irregular edges
+    // =========================================================
+
+    // TL
+    0x27,
+    0x7F,
+    0xFF,
+    0xDB,
+    0xFF,
+    0xBD,
+    0xFF,
+    0x7F,
+
+    // TR
+    0xE4,
+    0xFE,
+    0xFF,
+    0xDB,
+    0xFF,
+    0xBD,
+    0xFF,
+    0xFE,
+
+    // BL
+    0xFF,
+    0xBD,
+    0xFF,
+    0xDB,
+    0xFF,
+    0x7F,
+    0x27,
+    0x00,
+
+    // BR
+    0xFF,
+    0xBD,
+    0xFF,
+    0xDB,
+    0xFF,
+    0xFE,
+    0xE4,
+    0x00,
+
+    // =========================================================
+    // FRAME 2 - fading smoke puffs breaking apart
+    // =========================================================
+
+    // TL
+    0x00,
+    0x12,
+    0x3B,
+    0x7F,
+    0x3D,
+    0x77,
+    0x1F,
+    0x0E,
+
+    // TR
+    0x00,
+    0x48,
+    0xDC,
+    0xFE,
+    0xBC,
+    0xEE,
+    0xF8,
+    0x70,
+
+    // BL
+    0x0E,
+    0x1F,
+    0x77,
+    0x3D,
+    0x7F,
+    0x3B,
+    0x12,
+    0x00,
+
+    // BR
+    0x70,
+    0xF8,
+    0xEE,
+    0xBC,
+    0xFE,
+    0xDC,
+    0x48,
+    0x00,
+};
+
+static const u8 g_ExplosionTileColors[EXPLOSION_TILE_COUNT * EXPLOSION_TILE_SIZE] =
+{
+    // =========================================================
+    // FRAME 0 COLORS - hot white center on pale blast glow
+    // =========================================================
+
+    // TL
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+
+    // TR
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+
+    // BL
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+
+    // BR
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+
+    // =========================================================
+    // FRAME 1 COLORS - yellow flash peak
+    // =========================================================
+
+    // TL
+    COLOR_MERGE(COLOR_DARK_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_DARK_YELLOW, COLOR_WHITE),
+
+    // TR
+    COLOR_MERGE(COLOR_DARK_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_DARK_YELLOW, COLOR_WHITE),
+
+    // BL
+    COLOR_MERGE(COLOR_DARK_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_DARK_YELLOW, COLOR_WHITE),
+
+    // BR
+    COLOR_MERGE(COLOR_DARK_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_WHITE, COLOR_LIGHT_YELLOW),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_LIGHT_YELLOW, COLOR_WHITE),
+    COLOR_MERGE(COLOR_DARK_YELLOW, COLOR_WHITE),
+
+    // =========================================================
+    // FRAME 2 COLORS - gray-white smoke fade
+    // =========================================================
+
+    // TL
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+
+    // TR
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+
+    // BL
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+
+    // BR
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_WHITE, COLOR_GRAY),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+    COLOR_MERGE(COLOR_GRAY, COLOR_WHITE),
+};

@@ -6,6 +6,7 @@
 #include "../assets/playerSprites/player_sprite3.h"
 #include "../assets/playerSprites/player_sprite4.h"
 #include "../controllers/playerController.h"
+#include "../controllers/levelController.h"
 #include "../domain/Direction.h"
 #include "../domain/Bomb.h"
 #include "BombView.h"
@@ -177,7 +178,8 @@ static u8 Player_getFrameUp(u8 playerId, u8 walkFrame)
     }
 }
 
-static u8 Player_getFrameRight(u8 playerId, u8 walkFrame) {
+static u8 Player_getFrameRight(u8 playerId, u8 walkFrame)
+{
     if (playerId == 1)
     {
         return walkFrame ? PLAYER1_FRAME_RIGHT_1 : PLAYER1_FRAME_RIGHT_0;
@@ -196,7 +198,8 @@ static u8 Player_getFrameRight(u8 playerId, u8 walkFrame) {
     }
 }
 
-static u8 Player_getFrameLeft(u8 playerId, u8 walkFrame) {
+static u8 Player_getFrameLeft(u8 playerId, u8 walkFrame)
+{
     if (playerId == 1)
     {
         return walkFrame ? PLAYER1_FRAME_LEFT_1 : PLAYER1_FRAME_LEFT_0;
@@ -300,7 +303,7 @@ static u8 Player_getWalkFrame(u8 playerId, Direction direction)
     return Player_getFrameIdle(playerId);
 }
 
-void Player_manageMove(u8 playerId, u8* logicMap)
+void Player_manageMove(u8 playerId, u8 *logicMap)
 {
     Player *player = 0;
     Direction direction = PlayerController_manageMove(playerId, &player, logicMap);
@@ -309,7 +312,6 @@ void Player_manageMove(u8 playerId, u8* logicMap)
         Player_draw(playerId, player, Player_getWalkFrame(playerId, direction));
 }
 
-
 bool Player_hasShot(u8 playerId)
 {
     Player *player = 0;
@@ -317,9 +319,27 @@ bool Player_hasShot(u8 playerId)
     return hasShot;
 }
 
-void PlayerView_renderBomb(Bomb *bomb, u8 playerId) {
-   Player *player = PlayerController_getPlayerWithId(playerId);
-   Bomb_copyPosition(player->logicPosition, &(bomb->logicPosition));
-   Bomb_copyPosition(player->pixelPosition, &(bomb->pixelPosition));
-   BombView_render(bomb);
+void PlayerView_renderBomb(Bomb *bomb, u8 playerId)
+{
+    Player *player = PlayerController_getPlayerWithId(playerId);
+    if (Player_canPlaceBomb(player))
+    {
+        Player_setBombPlaced(player, bomb->id);
+        Bomb_copyPosition(player->logicPosition, &(bomb->logicPosition));
+        Bomb_copyPosition(player->pixelPosition, &(bomb->pixelPosition));
+        BombView_render(bomb);
+    }
+}
+
+void PlayerView_updateBombsStateOfPlayer(u8 playerId) {
+    Player *player = PlayerController_getPlayerWithId(playerId);
+    for (int i = 0; i < player->bombCount; i++) {
+        u8 bombId = player->BombIds[i];
+        Bomb *bomb = LevelController_getBombById(bombId);
+        if (bomb != 0) {
+            if (Bomb_isExploding(bomb)) {
+               BombView_renderExplosion(bomb, 1);                              
+            }
+        }
+     }
 }

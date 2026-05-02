@@ -60,7 +60,7 @@ AddSources = ["game/views/menuView.c", "game/views/levelView.c", "game/controlle
               "game/views/playerView.c", "game/controllers/playerController.c",
               "game/domain/Player.c", "game/domain/Bomb.c",
               "game/controllers/BombController.c",
-              "game/views/BombView.c"
+              "game/views/BombView.c"              
 ];
 
 //-- Additional extern library to be linked with the project (array)

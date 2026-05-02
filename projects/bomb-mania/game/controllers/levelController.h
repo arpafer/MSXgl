@@ -2,6 +2,7 @@
 #include "msxgl.h"
 
 #include "../domain/Bomb.h"
+#include "../domain/Position.h"
 
 #ifndef LEVEL_BLOCK_FLOOR
 #define LEVEL_BLOCK_FLOOR          0
@@ -30,3 +31,17 @@ const TileInfo* LevelController_getTilesInfo(unsigned char nivelId);
 u8* LevelController_getLogicMap(unsigned char nivelId);
 
 Bomb *LevelController_getAvailableBomb();
+
+void LevelController_updateBombsState();
+
+u8* LevelController_getExplodingBombIds();
+
+Bomb *LevelController_getBombById(u8 bombId);
+
+Position* LevelController_getUpFreePositionsFromCurrentPosition(Position *position, u8 scope);
+
+Position* LevelController_getDownFreePositionsFromCurrentPosition(Position *position, u8 scope);
+
+Position* LevelController_getLeftFreePositionsFromCurrentPosition(Position *position, u8 scope);
+
+Position* LevelController_getRightFreePositionsFromCurrentPosition(Position *position, u8 scope);
