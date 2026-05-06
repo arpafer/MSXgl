@@ -6,7 +6,9 @@
 #include "../controllers/levelController.h"
 #include "vdp.h"
 
-#define BOMB_TILE_BASE_OFFSET 251
+#define BOMB_TILE_BASE_OFFSET 235
+#define LEVEL_FLOOR_TILE_BASE_OFFSET 239
+#define EXPLOSION_TILE_BASE_OFFSET 251
 #define BOMB_LOGIC_TO_TILE_SCALE 2
 #define BOMB_EXPLOSION_TIMER_OFFSET 64
 #define BOMB_EXPLOSION_SECONDS 1
@@ -14,16 +16,14 @@
 #define BOMB_EXPLOSION_INVALID_POSITION 0xFF
 
 #ifndef LEVEL_PHYSICAL_COLS
-  #define LEVEL_PHYSICAL_COLS 32
-  #define LEVEL_LOGICAL_MAX_COLS (LEVEL_PHYSICAL_COLS / 2)
+#define LEVEL_PHYSICAL_COLS 32
+#define LEVEL_LOGICAL_MAX_COLS (LEVEL_PHYSICAL_COLS / 2)
 #endif
 
 #ifndef LEVEL_PHYSICAL_ROWS
-  #define LEVEL_PHYSICAL_ROWS 20
-  #define LEVEL_LOGICAL_MAX_ROWS (LEVEL_PHYSICAL_ROWS / 2)
+#define LEVEL_PHYSICAL_ROWS 20
+#define LEVEL_LOGICAL_MAX_ROWS (LEVEL_PHYSICAL_ROWS / 2)
 #endif
-
-
 
 static bool g_BombExplosionStarted[BOMB_EXPLOSION_MAX_BOMBS];
 static u8 g_BombExplosionTicks[BOMB_EXPLOSION_MAX_BOMBS];
@@ -47,25 +47,61 @@ static void BombView_renderTile2x2(u8 x, u8 y)
    VDP_Poke_GM2(x + 1, y + 1, BOMB_TILE_BASE_OFFSET + BOMB_TILE_BR);
 }
 
+static void BombView_renderExplosionTile2x2(u8 x, u8 y)
+{
+   VDP_Poke_GM2(x, y, EXPLOSION_TILE_BASE_OFFSET + EXPLOSION_TILE_TL(0));
+   VDP_Poke_GM2(x + 1, y, EXPLOSION_TILE_BASE_OFFSET + EXPLOSION_TILE_TR(0));
+   VDP_Poke_GM2(x, y + 1, EXPLOSION_TILE_BASE_OFFSET + EXPLOSION_TILE_BL(0));
+   VDP_Poke_GM2(x + 1, y + 1, EXPLOSION_TILE_BASE_OFFSET + EXPLOSION_TILE_BR(0));
+}
+
 static void BombView_loadExplosionFrame(u8 frame)
 {
    const u8 *patterns = g_ExplosionTilePatterns + ((u16)frame * EXPLOSION_TILES_PER_FRAME * EXPLOSION_TILE_SIZE);
    const u8 *colors = g_ExplosionTileColors + ((u16)frame * EXPLOSION_TILES_PER_FRAME * EXPLOSION_TILE_SIZE);
 
-   VDP_LoadBankPattern_GM2(patterns, EXPLOSION_TILES_PER_FRAME, 0, BOMB_TILE_BASE_OFFSET);
-   VDP_LoadBankPattern_GM2(patterns, EXPLOSION_TILES_PER_FRAME, 1, BOMB_TILE_BASE_OFFSET);
-   VDP_LoadBankPattern_GM2(patterns, EXPLOSION_TILES_PER_FRAME, 2, BOMB_TILE_BASE_OFFSET);
+   VDP_LoadBankPattern_GM2(patterns, EXPLOSION_TILES_PER_FRAME, 0, EXPLOSION_TILE_BASE_OFFSET);
+   VDP_LoadBankPattern_GM2(patterns, EXPLOSION_TILES_PER_FRAME, 1, EXPLOSION_TILE_BASE_OFFSET);
+   VDP_LoadBankPattern_GM2(patterns, EXPLOSION_TILES_PER_FRAME, 2, EXPLOSION_TILE_BASE_OFFSET);
 
-   VDP_LoadBankColor_GM2(colors, EXPLOSION_TILES_PER_FRAME, 0, BOMB_TILE_BASE_OFFSET);
-   VDP_LoadBankColor_GM2(colors, EXPLOSION_TILES_PER_FRAME, 1, BOMB_TILE_BASE_OFFSET);
-   VDP_LoadBankColor_GM2(colors, EXPLOSION_TILES_PER_FRAME, 2, BOMB_TILE_BASE_OFFSET);
+   VDP_LoadBankColor_GM2(colors, EXPLOSION_TILES_PER_FRAME, 0, EXPLOSION_TILE_BASE_OFFSET);
+   VDP_LoadBankColor_GM2(colors, EXPLOSION_TILES_PER_FRAME, 1, EXPLOSION_TILE_BASE_OFFSET);
+   VDP_LoadBankColor_GM2(colors, EXPLOSION_TILES_PER_FRAME, 2, EXPLOSION_TILE_BASE_OFFSET);
 }
 
 static void BombView_renderExplosionTile(Position *position)
 {
-   BombView_renderTile2x2(
-      position->x * BOMB_LOGIC_TO_TILE_SCALE,
-      position->y * BOMB_LOGIC_TO_TILE_SCALE);
+   BombView_renderExplosionTile2x2(
+       position->x * BOMB_LOGIC_TO_TILE_SCALE,
+       position->y * BOMB_LOGIC_TO_TILE_SCALE);
+}
+
+static void BombView_clearExplosionTile(Position *position)
+{
+   u8 tileX = position->x * BOMB_LOGIC_TO_TILE_SCALE;
+   u8 tileY = position->y * BOMB_LOGIC_TO_TILE_SCALE;
+
+   VDP_Poke_GM2(tileX, tileY, LEVEL_FLOOR_TILE_BASE_OFFSET + 0);
+   VDP_Poke_GM2(tileX + 1, tileY, LEVEL_FLOOR_TILE_BASE_OFFSET + 1);
+   VDP_Poke_GM2(tileX, tileY + 1, LEVEL_FLOOR_TILE_BASE_OFFSET + 2);
+   VDP_Poke_GM2(tileX + 1, tileY + 1, LEVEL_FLOOR_TILE_BASE_OFFSET + 3);
+}
+
+static void BombView_clearExplosionLine(Position *positions, u8 scope)
+{
+   u8 i;
+
+   if (positions == 0)
+      return;
+
+   for (i = 0; i < scope; i++)
+   {
+      if ((positions[i].x != BOMB_EXPLOSION_INVALID_POSITION) &&
+          (positions[i].y != BOMB_EXPLOSION_INVALID_POSITION))
+      {
+         BombView_clearExplosionTile(&positions[i]);
+      }
+   }
 }
 
 static void BombView_renderExplosionLine(Position *positions, u8 scope)
@@ -96,6 +132,61 @@ static u8 BombView_getExplosionFrame(u8 bombIndex)
    return frame;
 }
 
+static void BombView_startExplosion(u8 bombIndex, u8 timerId)
+{
+   TimerController_createCount(timerId);
+   g_BombExplosionStarted[bombIndex] = TRUE;
+   g_BombExplosionTicks[bombIndex] = 0;
+}
+
+static void BombView_clearExplosion(Bomb *bomb, u8 scope)
+{
+   Position *upPositions;
+   Position *downPositions;
+   Position *leftPositions;
+   Position *rightPositions;
+
+   upPositions = LevelController_getUpFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
+   downPositions = LevelController_getDownFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
+   leftPositions = LevelController_getLeftFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
+   rightPositions = LevelController_getRightFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
+
+   BombView_clearExplosionTile(&(bomb->logicPosition));
+   BombView_clearExplosionLine(upPositions, scope);
+   BombView_clearExplosionLine(downPositions, scope);
+   BombView_clearExplosionLine(leftPositions, scope);
+   BombView_clearExplosionLine(rightPositions, scope);
+}
+
+static void BombView_finishExplosion(Bomb *bomb, u8 bombIndex, u8 timerId, u8 scope)
+{
+   BombView_clearExplosion(bomb, scope);
+   TimerController_removeTimerByTimerId(timerId);
+   g_BombExplosionStarted[bombIndex] = FALSE;
+   BombController_setBombAsExploited(bomb);
+}
+
+static void BombView_renderActiveExplosion(Bomb *bomb, u8 bombIndex, u8 scope)
+{
+   Position *upPositions;
+   Position *downPositions;
+   Position *leftPositions;
+   Position *rightPositions;
+
+   upPositions = LevelController_getUpFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
+   downPositions = LevelController_getDownFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
+   leftPositions = LevelController_getLeftFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
+   rightPositions = LevelController_getRightFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
+
+   BombView_loadExplosionFrame(BombView_getExplosionFrame(bombIndex));
+   BombView_renderExplosionTile(&(bomb->logicPosition));
+   BombView_renderExplosionLine(upPositions, scope);
+   BombView_renderExplosionLine(downPositions, scope);
+   BombView_renderExplosionLine(leftPositions, scope);
+   BombView_renderExplosionLine(rightPositions, scope);
+   g_BombExplosionTicks[bombIndex]++;
+}
+
 void BombView_render(Bomb *bomb)
 {
    u8 tileX;
@@ -118,12 +209,6 @@ void BombView_renderExplosion(Bomb *bomb, u8 scope)
 {
    u8 bombIndex;
    u8 timerId;
-   u8 frame;
-
-   Position *upPositions;
-   Position *downPositions;
-   Position *leftPositions;
-   Position *rightPositions;
 
    if (bomb == 0)
       return;
@@ -132,33 +217,13 @@ void BombView_renderExplosion(Bomb *bomb, u8 scope)
    timerId = BOMB_EXPLOSION_TIMER_OFFSET + bomb->id;
 
    if (!g_BombExplosionStarted[bombIndex])
-   {
-      TimerController_createCount(timerId);
-      g_BombExplosionStarted[bombIndex] = TRUE;
-      g_BombExplosionTicks[bombIndex] = 0;
-   }
+      BombView_startExplosion(bombIndex, timerId);
 
    if (TimerController_countSeconds(timerId, BOMB_EXPLOSION_SECONDS))
    {
-      TimerController_removeTimerByTimerId(timerId);
-      g_BombExplosionStarted[bombIndex] = FALSE;
-      BombController_setBombAsExploited(bomb);
+      BombView_finishExplosion(bomb, bombIndex, timerId, scope);
       return;
    }
 
-   frame = BombView_getExplosionFrame(bombIndex);
-   BombView_loadExplosionFrame(frame);
-
-   upPositions = LevelController_getUpFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
-   downPositions = LevelController_getDownFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
-   leftPositions = LevelController_getLeftFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
-   rightPositions = LevelController_getRightFreePositionsFromCurrentPosition(&(bomb->logicPosition), scope);
-
-   BombView_renderExplosionTile(&(bomb->logicPosition));
-   BombView_renderExplosionLine(upPositions, scope);
-   BombView_renderExplosionLine(downPositions, scope);
-   BombView_renderExplosionLine(leftPositions, scope);
-   BombView_renderExplosionLine(rightPositions, scope);
-
-   g_BombExplosionTicks[bombIndex]++;
+   BombView_renderActiveExplosion(bomb, bombIndex, scope);
 }

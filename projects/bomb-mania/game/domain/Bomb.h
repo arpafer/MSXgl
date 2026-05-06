@@ -12,6 +12,8 @@
 #ifndef BOMB_STRUCT
 #define BOMB_STRUCT
 
+#define INVALID_POSITION 0xFF
+
 typedef enum _BombState {
    AVAILABLE_BOMB,
    READY_BOMB,

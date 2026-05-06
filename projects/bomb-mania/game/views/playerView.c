@@ -331,18 +331,24 @@ void PlayerView_renderBomb(Bomb *bomb, u8 playerId)
     }
 }
 
-void PlayerView_updateBombsStateOfPlayer(u8 playerId) {
+void PlayerView_updateBombsStateOfPlayer(u8 playerId)
+{
     Player *player = PlayerController_getPlayerWithId(playerId);
-    for (int i = 0; i < player->bombCount; i++) {
+    for (int i = 0; i < player->bombCount; i++)
+    {
         u8 bombId = player->BombIds[i];
         Bomb *bomb = LevelController_getBombById(bombId);
-        if (bomb != 0) {
-            if (Bomb_isExploding(bomb)) {
-               BombView_renderExplosion(bomb, 1);                              
-            } else if (Bomb_isExploited(bomb)) {
-               Bomb_setAsAvailable(bomb);
-               PlayerController_removeBombFromPlayer(player, bombId);
+        if (bomb != 0)
+        {
+            if (Bomb_isExploding(bomb))
+            {
+                BombView_renderExplosion(bomb, 1);
+            }
+            else if (Bomb_isExploited(bomb))
+            {
+                Bomb_setAsAvailable(bomb);
+                PlayerController_removeBombFromPlayer(player, bombId);                
             }
         }
-     }
+    }
 }

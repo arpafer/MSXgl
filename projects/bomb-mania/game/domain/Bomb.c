@@ -31,7 +31,14 @@ void Bomb_setExploding(Bomb *bomb) {
 }
 
 void Bomb_setAsAvailable(Bomb *bomb) {
-   bomb->state = AVAILABLE_BOMB;
+    bomb->id = 0;
+    bomb->state = AVAILABLE_BOMB;
+    bomb->logicPosition.x = INVALID_POSITION;
+    bomb->logicPosition.y = INVALID_POSITION;
+    bomb->pixelPosition.x = INVALID_POSITION;
+    bomb->pixelPosition.y = INVALID_POSITION;
+    bomb->timeToExplode = BOMB_TIME_TO_EXPLODE;
+    bomb->timeLeft = BOMB_TIME_TO_EXPLODE;
 }
 
 void Bomb_setAsExploited(Bomb *bomb) {

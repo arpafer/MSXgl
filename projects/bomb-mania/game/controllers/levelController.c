@@ -30,7 +30,6 @@ static Position g_rightFreePositions[LEVEL1_LOGIC_COLS];
 
 #define FREE_SPACE LEVEL1_BLOCK_FLOOR
 #define DESTRUCTIBLE_BLOCK LEVEL1_BLOCK_DESTRUCTIBLE
-#define INVALID_POSITION 0xFF
 
 static void LevelController_clearPositions(Position *positions, u8 count)
 {
@@ -52,14 +51,7 @@ static void LevelController_setPosition(Position *position, u8 x, u8 y)
 void LevelController_initBombPool() {
    for (int i = 0; i < BOMB_NUM_MAX_PER_PLAYER * 4; i++) {
       Bomb *_bomb = &g_bombPool[i];
-      _bomb->id = 0;
-      _bomb->state = AVAILABLE_BOMB;
-      _bomb->logicPosition.x = INVALID_POSITION;
-      _bomb->logicPosition.y = INVALID_POSITION;
-      _bomb->pixelPosition.x = INVALID_POSITION;
-      _bomb->pixelPosition.y = INVALID_POSITION;
-      _bomb->timeToExplode = BOMB_TIME_TO_EXPLODE;
-      _bomb->timeLeft = BOMB_TIME_TO_EXPLODE;
+      Bomb_setAsAvailable(_bomb);
    }
 }
 
