@@ -214,7 +214,8 @@ void BombView_renderExplosion(Bomb *bomb, u8 scope)
       return;
 
    bombIndex = bomb->id & 0x0F;
-   timerId = BOMB_EXPLOSION_TIMER_OFFSET + bomb->id;
+  // timerId = BOMB_EXPLOSION_TIMER_OFFSET + bomb->id;
+   timerId = bomb->id;
 
    if (!g_BombExplosionStarted[bombIndex])
       BombView_startExplosion(bombIndex, timerId);

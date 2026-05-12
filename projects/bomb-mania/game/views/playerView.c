@@ -7,6 +7,7 @@
 #include "../assets/playerSprites/player_sprite4.h"
 #include "../controllers/playerController.h"
 #include "../controllers/levelController.h"
+#include "../controllers/BombController.h"
 #include "../domain/Direction.h"
 #include "../domain/Bomb.h"
 #include "BombView.h"
@@ -346,7 +347,8 @@ void PlayerView_updateBombsStateOfPlayer(u8 playerId)
             }
             else if (Bomb_isExploited(bomb))
             {
-                Bomb_setAsAvailable(bomb);
+                BombController_setBombAsAvailable(bomb);
+              //  Bomb_setAsAvailable(bomb);
                 PlayerController_removeBombFromPlayer(player, bombId);                
             }
         }

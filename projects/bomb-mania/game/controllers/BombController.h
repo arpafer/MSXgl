@@ -3,7 +3,13 @@
 
 #include "../domain/Bomb.h"
 
+#ifndef ID_BASE_BOMB
+    #define ID_BASE_BOMB 3
+#endif
+
 void BombController_setBombAsActive(Bomb *bomb);
+
+void BombController_setBombAsAvailable(Bomb *bomb);
 
 void BombController_copyLogicPosition(Position *originPosition, Bomb *bomb);
 

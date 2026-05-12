@@ -30,8 +30,7 @@ void Bomb_setExploding(Bomb *bomb) {
    bomb->state = EXPLODING_BOMB;
 }
 
-void Bomb_setAsAvailable(Bomb *bomb) {
-    bomb->id = 0;
+void Bomb_setAsAvailable(Bomb *bomb) {    
     bomb->state = AVAILABLE_BOMB;
     bomb->logicPosition.x = INVALID_POSITION;
     bomb->logicPosition.y = INVALID_POSITION;

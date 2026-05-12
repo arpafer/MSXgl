@@ -1,10 +1,16 @@
 #include "../domain/Bomb.h"
 #include "timerController.h"
+#include "BombController.h"
 
 void BombController_setBombAsActive(Bomb *bomb) {   
    // bomb->state = READY_BOMB;
    Bomb_setAsReady(bomb);
    TimerController_createCount(bomb->id);
+}
+
+void BombController_setBombAsAvailable(Bomb *bomb) {
+   Bomb_setAsAvailable(bomb);
+   TimerController_removeTimerByTimerId(bomb->id);
 }
 
 void BombController_copyLogicPosition(Position *originPosition, Bomb *bomb) {
@@ -18,7 +24,7 @@ void BombController_copyPixelPosition(Position *originPosition, Bomb *bomb) {
 }
 
 bool BombController_isBombActive(Bomb *bomb) {   
-   return bomb->state == READY_BOMB && !TimerController_countSeconds(bomb->id, bomb->timeToExplode);
+   return bomb->state == READY_BOMB;
 }
 
 void BombController_setBombAsExploited(Bomb *bomb) {
