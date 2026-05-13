@@ -45,3 +45,7 @@ Position* LevelController_getDownFreePositionsFromCurrentPosition(Position *posi
 Position* LevelController_getLeftFreePositionsFromCurrentPosition(Position *position, u8 scope);
 
 Position* LevelController_getRightFreePositionsFromCurrentPosition(Position *position, u8 scope);
+
+void LevelController_clearExploitedMapBlocks();
+
+bool LevelController_PlayerPositionIsInExplosion(Position *playerPosition, Bomb *bomb);

@@ -20,16 +20,18 @@ void Player_init(Player *player, u8 playerId, u8 velocity, Position *position, u
     player->scaleFactor = scaleType;
     player->bombCount = 0;
     player->pixelPosition = Player_getInitialPixelPosition(playerId, position, scaleType);
+    player->isAlive = TRUE;
 }
 
 bool Player_isDie(Player *player)
 {
-    return TRUE;
+    return !player->isAlive;
 }
 bool Player_isIdle(Player *player)
 {
     return TRUE;
 }
+
 bool Player_isMoving(Player *player)
 {
     return TRUE;

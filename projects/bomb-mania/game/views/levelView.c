@@ -13,7 +13,7 @@
 #define LEVEL_LOGICAL_MAX_COLS (LEVEL_PHYSICAL_COLS / 2)
 #define LEVEL_LOGICAL_MAX_ROWS (LEVEL_PHYSICAL_ROWS / 2)
 
-static u8* logicMap;
+static u8 *logicMap;
 
 u8 stage_countdown_times[2] = {
     180,
@@ -24,15 +24,12 @@ static u8 Level_getStageTime(u8 levelId)
     return stage_countdown_times[levelId - 1];
 }
 
-
-
 void Level_init()
 {
     VDP_Initialize();
     VDP_SetMode(VDP_MODE_SCREEN2);
     VDP_EnableVBlank(TRUE);
     VDP_ClearVRAM();
-
 }
 
 static void Level_loadTileSetToAllBanks(const u8 *patterns,
@@ -175,15 +172,21 @@ bool Level_isEnded(u8 levelId, u8 numPlayers)
 {
     u8 stageTime = Level_getStageTime(levelId);
     bool ended = CountDown_isEnded(stageTime);
-    for (int i = 1; i <= numPlayers; i++) {
-        PlayerView_updateBombsStateOfPlayer(i);
-        Player_manageMove(i, logicMap);
-        bool hasShot = Player_hasShot(i);
-        if (hasShot) {
-           Bomb *availableBomb = LevelController_getAvailableBomb();
-           if (availableBomb != 0) {
-              PlayerView_renderBomb(availableBomb, i);           
-           }
+    for (int i = 1; i <= numPlayers; i++)
+    {
+        if (PlayerController_isAlive(PlayerController_getPlayerWithId(i)))
+        {
+            PlayerView_updateBombsStateOfPlayer(i);
+            Player_manageMove(i, logicMap);
+            bool hasShot = Player_hasShot(i);
+            if (hasShot)
+            {
+                Bomb *availableBomb = LevelController_getAvailableBomb();
+                if (availableBomb != 0)
+                {
+                    PlayerView_renderBomb(availableBomb, i);
+                }
+            }
         }
     }
     LevelController_updateBombsState();

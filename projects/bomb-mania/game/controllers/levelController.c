@@ -24,6 +24,7 @@ static const TileInfo g_Level1TileInfo =
 static Bomb g_bombPool[BOMB_NUM_MAX_PER_PLAYER * 4];
 
 static u8 g_exploitedMapBlocks[LEVEL1_LOGIC_SIZE];
+static u8 g_exploitedBlockCount = 0;
 static Position g_upFreePositions[LEVEL1_LOGIC_ROWS];
 static Position g_downFreePositions[LEVEL1_LOGIC_ROWS];
 static Position g_leftFreePositions[LEVEL1_LOGIC_COLS];
@@ -41,6 +42,27 @@ static void LevelController_clearPositions(Position *positions, u8 count)
       positions[i].x = INVALID_POSITION;
       positions[i].y = INVALID_POSITION;
    }
+}
+
+void LevelController_clearExploitedMapBlocks() {
+   for (int i = 0; i < g_exploitedBlockCount; i++)
+   {
+      Position *position = &g_exploitedMapBlocks[i];
+      int index = position->y * LEVEL1_LOGIC_COLS + position->x;
+      g_Level1LogicMapCopy[index] = FREE_SPACE;
+   }
+   g_exploitedBlockCount = 0;
+}
+
+bool LevelController_PlayerPositionIsInExplosion(Position *playerPosition, Bomb *bomb) {
+   for (int i = 0; i < g_exploitedBlockCount; i++)
+   {
+      Position *position = &g_exploitedMapBlocks[i];
+      if (position->x == playerPosition->x && position->y == playerPosition->y) {
+         return TRUE;
+      }
+   }
+   return FALSE;
 }
 
 static void LevelController_setPosition(Position *position, u8 x, u8 y)
@@ -170,12 +192,16 @@ Position *LevelController_getUpFreePositionsFromCurrentPosition(Position *positi
       if (g_Level1LogicMapCopy[i] == FREE_SPACE)
       {
          LevelController_setPosition(&g_upFreePositions[_positionIndex], currentCol, previousRow);
-         _positionIndex++;
+         LevelController_setPosition(&g_exploitedMapBlocks[g_exploitedBlockCount], currentCol, previousRow);
+         g_exploitedBlockCount++;
+         _positionIndex++;         
       }
       else if (g_Level1LogicMapCopy[i] == DESTRUCTIBLE_BLOCK)
       {
-         LevelController_setPosition(&g_upFreePositions[_positionIndex], currentCol, previousRow);
-         _positionIndex++;
+         LevelController_setPosition(&g_upFreePositions[g_exploitedBlockCount], currentCol, previousRow);
+         LevelController_setPosition(&g_exploitedMapBlocks[g_exploitedBlockCount], currentCol, previousRow);
+         g_exploitedBlockCount++;
+         _positionIndex++;         
          _canAdvance = FALSE;
          g_Level1LogicMapCopy[i] = FREE_SPACE;
       }
@@ -203,11 +229,15 @@ Position *LevelController_getDownFreePositionsFromCurrentPosition(Position *posi
       if (g_Level1LogicMapCopy[i] == FREE_SPACE)
       {
          LevelController_setPosition(&g_downFreePositions[_positionIndex], currentCol, nextRow);
+         LevelController_setPosition(&g_exploitedMapBlocks[g_exploitedBlockCount], currentCol, nextRow);
+         g_exploitedBlockCount++;
          _positionIndex++;
       }
       else if (g_Level1LogicMapCopy[i] == DESTRUCTIBLE_BLOCK)
       {
          LevelController_setPosition(&g_downFreePositions[_positionIndex], currentCol, nextRow);
+         LevelController_setPosition(&g_exploitedMapBlocks[g_exploitedBlockCount], currentCol, nextRow);
+         g_exploitedBlockCount++;
          _positionIndex++;
          _canAdvance = FALSE;
          g_Level1LogicMapCopy[i] = FREE_SPACE;
@@ -236,11 +266,15 @@ Position *LevelController_getLeftFreePositionsFromCurrentPosition(Position *posi
       if (g_Level1LogicMapCopy[i] == FREE_SPACE)
       {
          LevelController_setPosition(&g_leftFreePositions[_positionIndex], previousCol, currentRow);
+         LevelController_setPosition(&g_exploitedMapBlocks[g_exploitedBlockCount], previousCol, currentRow);
+         g_exploitedBlockCount++;
          _positionIndex++;
       }
       else if (g_Level1LogicMapCopy[i] == DESTRUCTIBLE_BLOCK)
       {
          LevelController_setPosition(&g_leftFreePositions[_positionIndex], previousCol, currentRow);
+         LevelController_setPosition(&g_exploitedMapBlocks[g_exploitedBlockCount], previousCol, currentRow);
+         g_exploitedBlockCount++;
          _positionIndex++;
          _canAdvance = FALSE;
          g_Level1LogicMapCopy[i] = FREE_SPACE;
@@ -269,11 +303,15 @@ Position *LevelController_getRightFreePositionsFromCurrentPosition(Position *pos
       if (g_Level1LogicMapCopy[i] == FREE_SPACE)
       {
          LevelController_setPosition(&g_rightFreePositions[_positionIndex], nextCol, currentRow);
+         LevelController_setPosition(&g_exploitedMapBlocks[g_exploitedBlockCount], nextCol, currentRow);
+         g_exploitedBlockCount++;
          _positionIndex++;
       }
       else if (g_Level1LogicMapCopy[i] == DESTRUCTIBLE_BLOCK)
       {
          LevelController_setPosition(&g_rightFreePositions[_positionIndex], nextCol, currentRow);
+         LevelController_setPosition(&g_exploitedMapBlocks[g_exploitedBlockCount], nextCol, currentRow);
+         g_exploitedBlockCount++;
          _positionIndex++;
          _canAdvance = FALSE;
          g_Level1LogicMapCopy[i] = FREE_SPACE;

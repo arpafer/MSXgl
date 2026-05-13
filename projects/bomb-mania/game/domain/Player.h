@@ -25,6 +25,7 @@ typedef struct PlayerStruct
     u8 scaleFactor;
     u8 BombIds[MAX_BOMB_PER_PLAYER];
     u8 bombCount;
+    bool isAlive;
 } Player;
 
 

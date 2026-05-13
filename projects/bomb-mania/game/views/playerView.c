@@ -344,12 +344,19 @@ void PlayerView_updateBombsStateOfPlayer(u8 playerId)
             if (Bomb_isExploding(bomb))
             {
                 BombView_renderExplosion(bomb, 1);
+                if (LevelController_PlayerPositionIsInExplosion(player->logicPosition, bomb))
+                {
+                    PlayerController_setPlayerAsDead(player);
+                    //////////////////////////////////////////////////////////
+                    /// AQUI FALTA RENDERIZAR LOS FRAMES DE JUGADOR MUERTO
+                    ///////////////////////////////////////////////////////
+                }
             }
             else if (Bomb_isExploited(bomb))
             {
-                BombController_setBombAsAvailable(bomb);
-              //  Bomb_setAsAvailable(bomb);
+                BombController_setBombAsAvailable(bomb);              
                 PlayerController_removeBombFromPlayer(player, bombId);                
+                LevelController_clearExploitedMapBlocks();
             }
         }
     }

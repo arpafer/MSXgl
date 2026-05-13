@@ -219,3 +219,11 @@ void PlayerController_removeBombFromPlayer(Player *player, u8 bombId) {
       }
    }
 }
+
+void PlayerController_setPlayerAsDead(Player *player) {
+   player->isAlive = FALSE;
+}
+
+bool PlayerController_isAlive(Player *player) {
+    return player->isAlive;
+}
